@@ -1,10 +1,7 @@
 {
   "name": "ros-joint-states",
   "description": "ROS element that subscribes to joint states topic.",
-  "main": [
-    "ros-joint-states.html",
-    "ros-joint-state.html"
-  ],
+  "main": "ros-joint-states.html",
   "license": "https://opensource.org/licenses/MIT",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
