@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`ros-joint-states`
+ROS element that subscribes to joint states topic.
+
+@demo demo/index.html
+-->
+
+<dom-module id="ros-joint-states">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'ros-joint-states',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'ros-joint-states',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
