@@ -20,14 +20,9 @@ ROS element that subscribes to joint states topic.
         ros="{{ros}}"
         joint-states="{{jointStates}}"
       ></ros-joint-states>
-      <ros-joint-state
-        joint-states="[[jointStates]]"
-        joint-name="torso_lift_joint"
-        position="{{torsoLiftPos}}"
-        velocity="{{torsoLiftVel}}"
-        effort="{{torsoLiftEffort}}"
-      ></ros-joint-state>
-
+      Torso lift joint position: {{jointStates.torso_lift_joint.position}}<br />
+      Torso lift joint velocity: {{jointStates.torso_lift_joint.position}}<br />
+      Torso lift joint effort: {{jointStates.torso_lift_joint.position}}
 
   If `auto` is not set, then call `start()` to start receiving messages on
   `/joint_states`. Call `stop()` to stop receiving messages.
