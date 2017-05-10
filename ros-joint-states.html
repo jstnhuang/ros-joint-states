@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../ros-topic/ros-topic.html">
 
 <!--
 `ros-joint-states`
@@ -6,6 +7,32 @@ ROS element that subscribes to joint states topic.
 
 @demo demo/index.html
 -->
+<!--
+  `<ros-joint-states>` subscribes to a topic of type sensor_msgs/JointState.
+  To actually read a particular joint state, use `<ros-joint-state>`.
+  
+  Example:
+
+      <ros-websocket auto ros="{{ros}}"></ros-websocket>
+      <ros-joint-states
+        auto
+        topic="/joint_states"
+        ros="{{ros}}"
+        joint-states="{{jointStates}}"
+      ></ros-joint-states>
+      <ros-joint-state
+        joint-states="[[jointStates]]"
+        joint-name="torso_lift_joint"
+        position="{{torsoLiftPos}}"
+        velocity="{{torsoLiftVel}}"
+        effort="{{torsoLiftEffort}}"
+      ></ros-joint-state>
+
+
+  If `auto` is not set, then call `start()` to start receiving messages on
+  `/joint_states`. Call `stop()` to stop receiving messages.
+-->
+
 
 <dom-module id="ros-joint-states">
   <template>
@@ -14,7 +41,14 @@ ROS element that subscribes to joint states topic.
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <ros-topic
+      auto="[[auto]]"
+      id="topic"
+      msg-type="sensor_msgs/JointState"
+      on-message="_handleMessage"
+      topic="[[topic]]"
+      ros="[[ros]]"
+    ></ros-topic>
   </template>
 
   <script>
@@ -23,12 +57,68 @@ ROS element that subscribes to joint states topic.
       is: 'ros-joint-states',
 
       properties: {
-        prop1: {
+        /**
+         * If true, subscribes to the joint state topic automatically when the
+         * topic name changes.
+         */
+        auto: {
+          type: Boolean,
+          value: false,
+        },
+
+        /** An object of joint states that should be passed to `<ros-joint-state>`. */
+        jointStates: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+          notify: true
+        },
+
+        /** The ROS object from `<ros-websocket>`. */
+        ros: {
+          type: Object,
+        },
+
+        /** The topic of type `sensor_msgs/JointState` to subscribe to. */
+        topic: {
           type: String,
-          value: 'ros-joint-states',
+          value: "/joint_states",
         },
       },
 
+      /**
+       * Start subscribing to the topic.
+       */
+      start: function() {
+        this.$.topic.subscribe();
+      },
+
+      /**
+       * Stop subscribing to the joint state topic.
+       */
+      stop: function() {
+        this.$.topic.unsubscribe();
+      },
+
+      _handleMessage: function(evt) {
+        var msg = evt.detail;
+        for (var i in msg.name) {
+          var name = msg.name[i];
+          if (this.jointStates && this.jointStates[name]) {
+            this.set('jointStates.' + name + '.position', msg.position[i]);
+            this.set('jointStates.' + name + '.velocity', msg.velocity[i]);
+            this.set('jointStates.' + name + '.effort', msg.effort[i]);
+          } else {
+            var state = {
+              position: msg.position[i],
+              velocity: msg.velocity[i],
+              effort: msg.effort[i]
+            };
+            this.set('jointStates.' + name, state);
+          }
+        }
+      }
     });
   </script>
 </dom-module>

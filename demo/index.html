@@ -10,6 +10,7 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../ros-websocket/ros-websocket.html">
     <link rel="import" href="../ros-joint-states.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -19,8 +20,22 @@
     <div class="vertical-section-container centered">
       <h3>Basic ros-joint-states demo</h3>
       <demo-snippet>
-        <template>
-          <ros-joint-states></ros-joint-states>
+        <template is="dom-bind">
+          <ros-websocket auto
+            url="ws://localhost:9090"
+            ros="{{ros}}"></ros-websocket>
+          <ros-joint-states auto
+            topic="/joint_states"
+            ros="[[ros]]"
+            joint-states="{{jointStates}}"></ros-joint-states>
+          <p>To run the demo:</p>
+          <ul>
+            <li><code>roslaunch pr2_gazebo pr2_empty_world.launch</code></li>
+            <li><code>roslaunch rosbridge_server rosbridge_websocket.launch</code></li>
+          </ul>
+          <p>
+            Torso lift joint: {{jointStates.torso_lift_joint.position}}
+          </p>
         </template>
       </demo-snippet>
     </div>
